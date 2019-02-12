@@ -99,11 +99,12 @@ export default class GenereateCommand extends Command {
         const resolvedOutput = output.startsWith('/')
           ? output
           : path.join(this.config.definitionDir, output)
-
-        fs.mkdirpSync(resolvedOutput)
-
+          
         if (generator === 'graphql-schema') {
+          fs.mkdirpSync(path.resolve(resolvedOutput, '../'))
           await this.generateSchema(resolvedOutput, schemaString)
+        } else {
+          fs.mkdirpSync(resolvedOutput)
         }
 
         const isMongo =
@@ -158,7 +159,7 @@ export default class GenereateCommand extends Command {
   }
 
   async generateSchema(output: string, schemaString: string) {
-    fs.writeFileSync(path.join(output, 'prisma.graphql'), schemaString)
+    fs.writeFileSync(output, schemaString)
 
     this.out.log(`Saving Prisma GraphQL schema (SDL) at ${output}`)
   }
